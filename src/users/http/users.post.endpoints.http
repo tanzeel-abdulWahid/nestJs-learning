@@ -1,0 +1,11 @@
+POST http://localhost:3000/users
+?limit=20
+&skip=0
+Content-Type:application/json
+
+{
+    "fname":"tanzeel",
+    "lname":"wahisd",
+    "email":"tanzeel@gmail.com",
+    "password":"T@anzeel123"
+}

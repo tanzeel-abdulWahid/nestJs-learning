@@ -1,0 +1,13 @@
+PATCH http://localhost:3000/posts
+Content-Type:application/json
+
+{
+    "id":623,
+    "title":"Demo",
+    "slug":"new-post",
+    "postType":"post",
+    "status":"draft",
+    "content":"this is dummy",
+    "tags":["nestjs","tss"],
+    "metaOption":[{"key":"test", "value":"Asdfas"}]
+}
