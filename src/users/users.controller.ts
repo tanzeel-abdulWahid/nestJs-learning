@@ -48,13 +48,13 @@ export class UsersController {
         @Query('skip', new DefaultValuePipe(1), ParseIntPipe) skip: number,
         @Body() createUserDto: CreateUserDto,
         @Headers() header: any,
-        @Ip() ip: any): string {
+        @Ip() ip: any) {
         // console.log(limit)
         // console.log(skip)
-        console.log(createUserDto instanceof CreateUserDto)
+        // console.log(createUserDto instanceof CreateUserDto)
         // console.log(header)
         // console.log(ip)
-        return "new user created"
+        return this.userService.createUser(createUserDto);
     }
 
     @Patch()
