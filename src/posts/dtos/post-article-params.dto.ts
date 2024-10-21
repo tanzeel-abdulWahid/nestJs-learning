@@ -1,7 +1,7 @@
-import { IsArray, IsEnum, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MinLength, ValidateNested } from "class-validator"
+import { IsArray, IsEnum, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator"
 import { PostType } from "../enums/PostType.enum"
 import { PostStatus } from "../enums/PostStatus.enum";
-import { CreateArticleMetaOptionsDto } from "./create-article-meta-options.dto";
+import { CreateArticleMetaOptionsDto } from "../../meta-options/dtos/create-article-meta-options.dto";
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
@@ -9,12 +9,14 @@ export class PostArticleDto {
     @ApiProperty({ example: "New Post Title", description: "Title for article" }) //for swagger required property
     @IsString()
     @MinLength(4)
+    @MaxLength(512)
     @IsNotEmpty()
     title: string;
 
     @ApiProperty({ example: 'my-blog-post', description: "for example 'my blog post' " })
     @IsString()
     @IsNotEmpty()
+    @MaxLength(256)
     @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         message:
             'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
@@ -58,6 +60,7 @@ export class PostArticleDto {
     })
     @IsOptional()
     @IsUrl()
+    @MaxLength(1024)
     featuredImageUrl?: string;
 
 
