@@ -83,30 +83,25 @@ export class PostArticleDto {
     tags?: string[];
 
     @ApiPropertyOptional({
-        type: 'array',
+        type: 'object',
         required: false,
         items: {
             type: 'object',
             properties: {
-                key: {
-                    type: 'string',
-                    description: 'key can be any string ',
-                    example: 'sidebar enabled'
-                },
-
-                value: {
-                    type: 'any',
-                    description: 'value can be any string ',
-                    example: true
-                },
+                metaValue: {
+                    type: 'json',
+                    description: 'The metaValue is a JSON string ',
+                    example: '{"sidebarEnabled":true}',
+                }
             }
         }
 
     })
     @IsOptional()
-    @IsArray()
     // Both lines are must for nested DTO
     @ValidateNested({ each: true })  //it ensures all above validations are conducrted
     @Type(() => CreateArticleMetaOptionsDto) // helps nest understand type of nested obj
-    metaOption?: CreateArticleMetaOptionsDto[];
+    metaOption?: CreateArticleMetaOptionsDto | null;
+
+
 }
