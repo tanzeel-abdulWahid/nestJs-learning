@@ -34,8 +34,14 @@ export class PostsSerivce {
             await this.metaOptionRepository.save(metaOpt);
         }
 
-        // ! ERROR HERE
         let createdArticle = this.articleOptionRepository.create(postArticleDto)
+
+        if (metaOpt) {
+            createdArticle.metaOption = metaOpt
+        }
+
+        return await this.articleOptionRepository.save(createdArticle)
+
 
     }
 

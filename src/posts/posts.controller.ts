@@ -24,7 +24,7 @@ export class PostsController {
     })
     @Post()
     public postArticle(@Body() postArticleDto: PostArticleDto) {
-        console.log(postArticleDto)
+        return this.postsSerivce.createArticle(postArticleDto)
     }
 
 

@@ -8,5 +8,7 @@ Content-Type:application/json
     "status":"draft",
     "content":"this is dummy",
     "tags":["nestjs","tss"],
-    "metaOption":[{"key":"test", "value":"Asdfas"}]
+    "metaOption":{
+        "metaValue":"{\"sidebarEnabled\":true, \"footerActive\":true}"
+    }
 }

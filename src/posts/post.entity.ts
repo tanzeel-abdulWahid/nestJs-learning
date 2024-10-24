@@ -72,6 +72,6 @@ export class Post {
 
     @OneToOne(() => MetaOption) //for one to one relations, these tags are must
     @JoinColumn()
-    metaOption?: CreateArticleMetaOptionsDto[];
+    metaOption?: CreateArticleMetaOptionsDto;
 
 }
