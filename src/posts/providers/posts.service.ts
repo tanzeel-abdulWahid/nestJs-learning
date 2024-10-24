@@ -28,40 +28,48 @@ export class PostsSerivce {
 
 
     public async createArticle(postArticleDto: PostArticleDto) {
-        let metaOpt = postArticleDto.metaOption ? this.metaOptionRepository.create(postArticleDto.metaOption) : null;
 
-        if (metaOpt) {
-            await this.metaOptionRepository.save(metaOpt);
-        }
+        // let metaOpt = postArticleDto.metaOption ? this.metaOptionRepository.create(postArticleDto.metaOption) : null;
+
+        // if (metaOpt) {
+        //     await this.metaOptionRepository.save(metaOpt);
+        // }
 
         let createdArticle = this.articleOptionRepository.create(postArticleDto)
 
-        if (metaOpt) {
-            createdArticle.metaOption = metaOpt
-        }
+        // if (metaOpt) {
+        //     createdArticle.metaOption = metaOpt
+        // }
+
+        // WE'LL DO USING CASCASEs
 
         return await this.articleOptionRepository.save(createdArticle)
 
 
     }
 
-    public getPosts(getPostsDto: GetPostsParamsDto) {
-        console.log(getPostsDto)
+    public async getPosts(getPostsDto: GetPostsParamsDto) {
         const user = this.usersService.findUserById(getPostsDto.userId);
         // use users service,
-        // if user exists, find a post
-        return [
-            {
-                user,
-                title: "tanzeel",
-                age: 23
-            },
-            {
-                user,
-                title: "yusra shah",
-                age: 20
-            },
 
-        ]
+        return this.articleOptionRepository.find({
+            relations: {
+                metaOption: true
+            }
+        });
+    }
+
+    public async deletePost(id: number) {
+        const post = await this.articleOptionRepository.findOneBy({
+            id
+        });
+
+        await this.articleOptionRepository.delete(id)
+
+        // delete the metaOption    
+        // await this.metaOptionRepository.delete(post.metaOption.id)
+
+        return { deleted: true, id: post.id }
+
     }
 }

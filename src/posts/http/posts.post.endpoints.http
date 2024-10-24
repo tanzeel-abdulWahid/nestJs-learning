@@ -3,12 +3,12 @@ Content-Type:application/json
 
 {
     "title":"Demo",
-    "slug":"new-post",
+    "slug":"new-post-3",
     "postType":"post",
     "status":"draft",
-    "content":"this is dummy",
+    "content":"this is dummy hehe",
     "tags":["nestjs","tss"],
     "metaOption":{
-        "metaValue":"{\"sidebarEnabled\":true, \"footerActive\":true}"
+        "metaValue":"{\"sidebarEnabled\":false, \"footerActive\":false}"
     }
 }

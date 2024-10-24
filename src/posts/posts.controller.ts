@@ -1,7 +1,7 @@
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetPostsParamsDto } from './dtos/get-posts-params.dto';
 import { PostsSerivce } from './providers/posts.service';
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe } from '@nestjs/common';
 import { PostArticleDto } from './dtos/post-article-params.dto';
 import { EditArticleDto } from './dtos/patch-article-params.dto';
 
@@ -25,6 +25,11 @@ export class PostsController {
     @Post()
     public postArticle(@Body() postArticleDto: PostArticleDto) {
         return this.postsSerivce.createArticle(postArticleDto)
+    }
+
+    @Delete()
+    public deletePost(@Query('id', ParseIntPipe) id: number) {
+        return this.postsSerivce.deletePost(id);
     }
 
 
