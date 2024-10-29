@@ -70,11 +70,14 @@ export class Post {
 
     tags?: string[];
 
-    @OneToOne(() => MetaOption, {
-        cascade: true,
-        eager: true //use this to get metaOptions in result also when getting posts, or use relation obj in service
-    }) //for one to one relations, these tags are must
-    @JoinColumn()
-    metaOption?: CreateArticleMetaOptionsDto;
+
+    @OneToOne(() => MetaOption,
+        (metaOpt) => metaOpt.post //yaha btana he metaOption table me post kaha he
+        , {
+            cascade: true,
+            eager: true //use this to get metaOptions in result also when getting posts, or use relation obj in service which is recommended
+        }) //for one to one relations, these tags are must
+    @JoinColumn() // FK is stored in post column because of this decorator.
+    metaOption?: MetaOption;
 
 }

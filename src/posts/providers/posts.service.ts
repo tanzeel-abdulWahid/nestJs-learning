@@ -64,12 +64,21 @@ export class PostsSerivce {
             id
         });
 
-        await this.articleOptionRepository.delete(id)
+        // await this.articleOptionRepository.delete(id)
 
-        // delete the metaOption    
+        // // delete the metaOption    
         // await this.metaOptionRepository.delete(post.metaOption.id)
 
-        return { deleted: true, id: post.id }
+        let inversePost = await this.metaOptionRepository.find({
+            where: { id: post.metaOption.id },
+            relations: {
+                post: true
+            }
+        })
+
+        console.log(inversePost)
+
+        // return { deleted: true, id: post.id }
 
     }
 }
