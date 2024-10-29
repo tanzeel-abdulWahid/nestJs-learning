@@ -60,25 +60,26 @@ export class PostsSerivce {
     }
 
     public async deletePost(id: number) {
-        const post = await this.articleOptionRepository.findOneBy({
-            id
-        });
+        // const post = await this.articleOptionRepository.findOneBy({
+        //     id
+        // });
 
-        // await this.articleOptionRepository.delete(id)
+        await this.articleOptionRepository.delete(id)
 
         // // delete the metaOption    
         // await this.metaOptionRepository.delete(post.metaOption.id)
 
-        let inversePost = await this.metaOptionRepository.find({
-            where: { id: post.metaOption.id },
-            relations: {
-                post: true
-            }
-        })
+        //  //!by setting it to bidirection, we can even get post from meta ooption
+        // let inversePost = await this.metaOptionRepository.find({
+        //     where: { id: post.metaOption.id },
+        //     relations: {
+        //         post: true
+        //     }
+        // })
 
-        console.log(inversePost)
+        // console.log(inversePost)
 
-        // return { deleted: true, id: post.id }
+        return { deleted: true, id }
 
     }
 }

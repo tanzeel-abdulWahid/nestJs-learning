@@ -1,5 +1,5 @@
 import { Post } from "src/posts/post.entity";
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class MetaOption {
@@ -19,6 +19,9 @@ export class MetaOption {
     updateDate: Date;
 
     // For BiDirection ==> yaha btana he post table me meta  option kahan he
-    @OneToOne(() => Post, (post) => post.metaOption)
+    @OneToOne(() => Post, (post) => post.metaOption, {
+        onDelete: 'CASCADE' // so it automatically deleted the metaoption
+    })
+    @JoinColumn()
     post: Post;
 }
