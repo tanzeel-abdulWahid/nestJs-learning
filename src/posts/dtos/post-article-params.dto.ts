@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator"
+import { IsArray, IsEnum, IsInt, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator"
 import { PostType } from "../enums/PostType.enum"
 import { PostStatus } from "../enums/PostStatus.enum";
 import { CreateArticleMetaOptionsDto } from "../../meta-options/dtos/create-article-meta-options.dto";
@@ -103,5 +103,13 @@ export class PostArticleDto {
     @Type(() => CreateArticleMetaOptionsDto) // helps nest understand type of nested obj
     metaOption?: CreateArticleMetaOptionsDto | null;
 
+    @ApiProperty({
+        type: 'integer',
+        example: 12,
+        description: "id of user"
+    })
+    @IsInt()
+    @IsNotEmpty()
+    authorId: number;
 
 }

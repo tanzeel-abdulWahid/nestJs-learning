@@ -13,5 +13,6 @@ Content-Type:application/json
     "tags":["nestjs","tss"],
     "metaOption":{
         "metaValue":"{\"sidebarEnabled\":false, \"footerActive\":false}"
-    }
+    },
+    "authorId":1
 }

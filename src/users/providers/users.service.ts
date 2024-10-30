@@ -54,11 +54,9 @@ export class UserService {
      * @param id get user id
      * @returns particular user
      */
-    public findUserById(id: number) {
-        return {
-            id: 2,
-            fname: "tanzeel",
-            email: "test@gmail.com"
-        }
+    public async findUserById(id: number) {
+        return await this.usersRespository.findOneBy({
+            id
+        })
     }
 }

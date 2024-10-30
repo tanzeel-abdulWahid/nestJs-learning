@@ -34,8 +34,11 @@ export class PostsSerivce {
         // if (metaOpt) {
         //     await this.metaOptionRepository.save(metaOpt);
         // }
-
-        let createdArticle = this.articleOptionRepository.create(postArticleDto)
+        let author = await this.usersService.findUserById(postArticleDto.authorId);
+        let createdArticle = this.articleOptionRepository.create({
+            ...postArticleDto,
+            author
+        })
 
         // if (metaOpt) {
         //     createdArticle.metaOption = metaOpt
@@ -54,7 +57,8 @@ export class PostsSerivce {
 
         return this.articleOptionRepository.find({
             relations: {
-                metaOption: true
+                metaOption: true,
+                author: true //RECOMMENDED-- OR we can use eager:true in posts entity
             }
         });
     }
