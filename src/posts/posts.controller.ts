@@ -37,6 +37,6 @@ export class PostsController {
     @ApiResponse({})
     @Patch()
     public editArticle(@Body() editArticleDto: EditArticleDto) {
-        console.log(editArticleDto)
+        return this.postsSerivce.update(editArticleDto);
     }
 }

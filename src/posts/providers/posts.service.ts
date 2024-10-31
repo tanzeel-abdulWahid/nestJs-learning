@@ -1,11 +1,13 @@
+import { EditArticleDto } from './../dtos/patch-article-params.dto';
 import { PostArticleDto } from './../dtos/post-article-params.dto';
 import { Body, Injectable } from '@nestjs/common';
 import { GetPostsParamsDto } from '../dtos/get-posts-params.dto';
 import { UserService } from 'src/users/providers/users.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../post.entity';
+import { TagsService } from 'src/tags/providers/tags.service';
 
 @Injectable()
 export class PostsSerivce {
@@ -23,7 +25,10 @@ export class PostsSerivce {
         @InjectRepository(Post)
         private articleOptionRepository: Repository<Post>,
 
-
+        /**
+               * Injecting users serivce
+              */
+        private readonly tagsService: TagsService,
     ) { }
 
 
@@ -35,9 +40,13 @@ export class PostsSerivce {
         //     await this.metaOptionRepository.save(metaOpt);
         // }
         let author = await this.usersService.findUserById(postArticleDto.authorId);
+
+        let tags = await this.tagsService.findMultipleTags(postArticleDto.tags)
+
         let createdArticle = this.articleOptionRepository.create({
             ...postArticleDto,
-            author
+            author,
+            tags
         })
 
         // if (metaOpt) {
@@ -47,8 +56,26 @@ export class PostsSerivce {
         // WE'LL DO USING CASCASEs
 
         return await this.articleOptionRepository.save(createdArticle)
+    }
 
+    public async update(editArticleDto: EditArticleDto) {
+        let post = await this.articleOptionRepository.findOneBy({ id: editArticleDto.id });
 
+        let tags = await this.tagsService.findMultipleTags(editArticleDto.tags)
+
+        // Update post related properties
+        post.title = editArticleDto.title ?? post.title;
+        post.content = editArticleDto.content ?? post.content;
+        post.status = editArticleDto.status ?? post.status;
+        post.postType = editArticleDto.postType ?? post.postType;
+        post.slug = editArticleDto.slug ?? post.slug;
+        post.featuredImageUrl =
+            editArticleDto.featuredImageUrl ?? post.featuredImageUrl;
+        post.publishedOn = editArticleDto.publishedOn ?? post.publishedOn;
+
+        post.tags = tags;
+
+        return await this.articleOptionRepository.save(post);
     }
 
     public async getPosts(getPostsDto: GetPostsParamsDto) {
@@ -58,7 +85,8 @@ export class PostsSerivce {
         return this.articleOptionRepository.find({
             relations: {
                 metaOption: true,
-                author: true //RECOMMENDED-- OR we can use eager:true in posts entity
+                author: true, //RECOMMENDED-- OR we can use eager:true in posts entity
+                tags: true
             }
         });
     }

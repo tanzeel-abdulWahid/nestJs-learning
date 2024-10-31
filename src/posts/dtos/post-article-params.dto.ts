@@ -73,14 +73,13 @@ export class PostArticleDto {
     publishedOn?: Date;
 
     @ApiPropertyOptional({
-        description: 'array of tags',
-        example: ["nestjs", "typescript"]
+        description: 'array of id of tags',
+        example: [1, 2]
     })
     @IsOptional()
     @IsArray()
-    @IsString({ each: true }) //check for each value of the array is string
-    @MinLength(3, { each: true })
-    tags?: string[];
+    @IsInt({ each: true }) //check for each value of the array is string
+    tags?: number[];
 
     @ApiPropertyOptional({
         type: 'object',

@@ -2,11 +2,11 @@ POST http://localhost:3000/posts
 Content-Type:application/json
 
 {
-    "title":"Demo",
-    "slug":"new-post-4",
+    "title":"AI in modern age",
+    "slug":"new-post-6",
     "postType":"post",
     "status":"draft",
-    "content":"this is dummy hehe",
+    "content":"this is dummy text about AI",
     "schema":"{\"something\":false, \"hehe\":false}",
     "featuredImageUrl": "http://localhost.com/images/image1.jpg",
     "publishedOn": "2024-03-16T07:46:32+0000",
@@ -14,5 +14,6 @@ Content-Type:application/json
     "metaOption":{
         "metaValue":"{\"sidebarEnabled\":false, \"footerActive\":false}"
     },
-    "authorId":1
+    "authorId":1,
+    "tags":[2]
 }

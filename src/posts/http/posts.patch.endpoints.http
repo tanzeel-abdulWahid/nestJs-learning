@@ -2,12 +2,11 @@ PATCH http://localhost:3000/posts
 Content-Type:application/json
 
 {
-    "id":623,
-    "title":"Demo",
-    "slug":"new-post",
+    "id":18,
+    "title":"Edited",
+    "slug":"new-edit",
     "postType":"post",
     "status":"draft",
     "content":"this is dummy",
-    "tags":["nestjs","tss"],
-    "metaOption":[{"key":"test", "value":"Asdfas"}]
+    "tags":[1,2]
 }

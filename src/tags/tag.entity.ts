@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Post } from "src/posts/post.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Tag {
@@ -52,4 +53,9 @@ export class Tag {
 
     @DeleteDateColumn() //it will only do soft delete, means add delete time only
     deleteDate: Date;
+
+    @ManyToMany(() => Post, (post) => post.tags, {
+        onDelete: 'CASCADE'
+    })
+    post: Post
 }

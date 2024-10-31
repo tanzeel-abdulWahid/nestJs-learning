@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PostType } from "./enums/PostType.enum";
 import { PostStatus } from "./enums/PostStatus.enum";
 import { CreateArticleMetaOptionsDto } from "../meta-options/dtos/create-article-meta-options.dto";
 import { MetaOption } from "src/meta-options/meta-option.entity";
 import { User } from "src/users/user.entity";
+import { Tag } from "src/tags/tag.entity";
 
 @Entity()
 export class Post {
@@ -71,7 +72,9 @@ export class Post {
     @ManyToOne(() => User, (user) => user.posts) //foreign key will reside here--always in child entity
     author: User;
 
-    tags?: string[];
+    @ManyToMany(() => Tag, (tag) => tag.post)
+    @JoinTable()
+    tags?: Tag[];
 
 
     @OneToOne(() => MetaOption,
