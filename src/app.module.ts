@@ -8,9 +8,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
+import { ConfigModule } from "@nestjs/config"
 
 @Module({
   imports: [UsersModule, PostsModule, AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true //means this config module is availabe in all modules
+    }),
     TypeOrmModule.forRootAsync({ //for Async Connection -- now we can inject dependencies
       imports: [],
       inject: [],
