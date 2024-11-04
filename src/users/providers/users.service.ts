@@ -42,8 +42,9 @@ export class UserService {
         const isAuth = this.authService.isAuthenticated();
         // console.log(isAuth)
 
-        const envVar = this.configService.get<string>("S3_BUCKET")
-        console.log("env var", envVar)
+        // To get the env variable
+        // const envVar = this.configService.get<string>("S3_BUCKET")
+        // console.log("env var", envVar)
 
         return [{
             name: "tanzeel",

@@ -8,32 +8,39 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
-import { ConfigModule } from "@nestjs/config"
+import { ConfigModule, ConfigService } from "@nestjs/config"
+
+const ENV = process.env.NODE_ENV;
 
 @Module({
   imports: [UsersModule, PostsModule, AuthModule,
     ConfigModule.forRoot({
-      isGlobal: true //means this config module is availabe in all modules
+      isGlobal: true, //means this config module is availabe in all modules
+      // envFilePath: ['.env.development'] //.env.development will work only
+      envFilePath: [!ENV ? '.env' : `.env.${ENV}`.trim()] //dev me dev load krega, test me test env
     }),
     TypeOrmModule.forRootAsync({ //for Async Connection -- now we can inject dependencies
-      imports: [],
-      inject: [],
-      useFactory: (() => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         // entities: [User],
         autoLoadEntities: true,
         synchronize: true, //should only be used in dev mode, coz its recreated dB every time
-        port: 5432,
-        username: 'postgres',
-        password: '1234',
-        host: 'localhost',
-        database: 'nestjs-blog'
-      }))
-
+        port: +configService.get("DATABASE_PORT"),
+        username: configService.get("DATABASE_USER"),
+        password: configService.get("DATABASE_PASSWORD"),
+        host: configService.get("DATABASE_HOST"),
+        database: configService.get("DATABASE_NAME")
+      })
     }),
     TagsModule,
     MetaOptionsModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor() { }
+
+}
