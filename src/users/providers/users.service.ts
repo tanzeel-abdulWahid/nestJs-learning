@@ -5,7 +5,8 @@ import { GetUsersParamDto } from './../dtos/get-users-params.dto';
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import profileConfig from '../config/profile.config';
 
 /**
  * Class to connect users service with other services
@@ -17,7 +18,11 @@ export class UserService {
         private readonly authService: AuthService,
         @InjectRepository(User)
         private usersRespository: Repository<User>,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+
+        @Inject(profileConfig.KEY)
+        private readonly profileconfiguration: ConfigType<typeof profileConfig>,
+
     ) { }
 
     public async createUser(createUserDto: CreateUserDto) {
@@ -46,6 +51,7 @@ export class UserService {
         // const envVar = this.configService.get<string>("S3_BUCKET")
         // console.log("env var", envVar)
 
+        console.log(this.profileconfiguration.profileApiKey)
         return [{
             name: "tanzeel",
             age: 23
