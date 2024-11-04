@@ -9,6 +9,8 @@ import { User } from './users/user.entity';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import { ConfigModule, ConfigService } from "@nestjs/config"
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
 
 const ENV = process.env.NODE_ENV;
 
@@ -17,7 +19,8 @@ const ENV = process.env.NODE_ENV;
     ConfigModule.forRoot({
       isGlobal: true, //means this config module is availabe in all modules
       // envFilePath: ['.env.development'] //.env.development will work only
-      envFilePath: [!ENV ? '.env' : `.env.${ENV}`.trim()] //dev me dev load krega, test me test env
+      envFilePath: [!ENV ? '.env' : `.env.${ENV}`.trim()], //dev me dev load krega, test me test env
+      load: [appConfig, databaseConfig]
     }),
     TypeOrmModule.forRootAsync({ //for Async Connection -- now we can inject dependencies
       imports: [ConfigModule],
@@ -25,13 +28,13 @@ const ENV = process.env.NODE_ENV;
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         // entities: [User],
-        autoLoadEntities: true,
-        synchronize: true, //should only be used in dev mode, coz its recreated dB every time
-        port: +configService.get("DATABASE_PORT"),
-        username: configService.get("DATABASE_USER"),
-        password: configService.get("DATABASE_PASSWORD"),
-        host: configService.get("DATABASE_HOST"),
-        database: configService.get("DATABASE_NAME")
+        autoLoadEntities: configService.get("database.autoLoadEntities"),
+        synchronize: configService.get("database.synchronize"), //should only be used in dev mode, coz its recreated dB every time
+        port: configService.get("database.port"),
+        username: configService.get("database.username"),
+        password: configService.get("database.password"),
+        host: configService.get("database.host"),
+        database: configService.get("database.dbname")
       })
     }),
     TagsModule,
