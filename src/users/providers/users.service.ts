@@ -2,7 +2,7 @@ import { CreateUserDto } from './../dtos/create-user.dto';
 import { Repository } from 'typeorm';
 import { AuthService } from './../../auth/providers/auth.service';
 import { GetUsersParamDto } from './../dtos/get-users-params.dto';
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, forwardRef, HttpException, HttpStatus, Inject, Injectable, RequestTimeoutException } from "@nestjs/common";
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService, ConfigType } from '@nestjs/config';
@@ -26,14 +26,33 @@ export class UserService {
     ) { }
 
     public async createUser(createUserDto: CreateUserDto) {
-        const existingUser = await this.usersRespository.findOne({
-            where: { email: createUserDto.email }
-        })
-        //TODO Handle Exception 
+        let existingUser = undefined;
 
+        try {
+            existingUser = await this.usersRespository.findOne({
+                where: { email: createUserDto.email }
+            })
+        } catch (error) {
+            throw new RequestTimeoutException('unable to proccess request', {
+                description: 'Error connecting to the DB'
+            })
+        }
+
+        if (existingUser) {
+            throw new BadRequestException('User already exists', {
+                description: 'try another email'
+            })
+        }
         // Create new user
         let newUser = this.usersRespository.create(createUserDto);
-        newUser = await this.usersRespository.save(newUser)
+
+        try {
+            newUser = await this.usersRespository.save(newUser)
+        } catch (error) {
+            throw new RequestTimeoutException('unable to proccess request', {
+                description: 'Error connecting to the DB'
+            })
+        }
 
         return newUser
     }
@@ -52,6 +71,20 @@ export class UserService {
         // console.log("env var", envVar)
 
         console.log(this.profileconfiguration.profileApiKey)
+
+        throw new HttpException({
+            status: HttpStatus.MOVED_PERMANENTLY,
+            error: 'this api endpoint doest not exists',
+            fileName: 'users.service.ts',
+            lineNumber: 79
+        },
+            HttpStatus.MOVED_PERMANENTLY,
+            {
+                cause: new Error(),
+                description: 'api endpoint was removed'
+            }
+        )
+
         return [{
             name: "tanzeel",
             age: 23
@@ -67,8 +100,21 @@ export class UserService {
      * @returns particular user
      */
     public async findUserById(id: number) {
-        return await this.usersRespository.findOneBy({
-            id
-        })
+        let user = undefined;
+        try {
+            user = await this.usersRespository.findOneBy({
+                id
+            })
+        } catch (error) {
+            throw new RequestTimeoutException('unable to proccess request', {
+                description: 'Error connecting to the DB'
+            })
+        }
+
+        if (!user) {
+            throw new BadRequestException('user does not exists')
+        }
+
+        return user
     }
 }

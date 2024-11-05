@@ -1,6 +1,6 @@
 import { EditArticleDto } from './../dtos/patch-article-params.dto';
 import { PostArticleDto } from './../dtos/post-article-params.dto';
-import { Body, Injectable } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, RequestTimeoutException } from '@nestjs/common';
 import { GetPostsParamsDto } from '../dtos/get-posts-params.dto';
 import { UserService } from 'src/users/providers/users.service';
 import { In, Repository } from 'typeorm';
@@ -59,9 +59,42 @@ export class PostsSerivce {
     }
 
     public async update(editArticleDto: EditArticleDto) {
-        let post = await this.articleOptionRepository.findOneBy({ id: editArticleDto.id });
+        let tags = undefined;
+        let post = undefined;
 
-        let tags = await this.tagsService.findMultipleTags(editArticleDto.tags)
+        try {
+            tags = await this.tagsService.findMultipleTags(editArticleDto.tags)
+        } catch (error) {
+            throw new RequestTimeoutException('unable to proccess request', {
+                description: 'Error connecting to the DB'
+            })
+        }
+
+        /**
+     * If tags were not found
+     * Need to be equal number of tags
+     */
+        if (!tags || tags.length !== editArticleDto.tags.length) {
+            throw new BadRequestException(
+                'Please check your tag Ids and ensure they are correct',
+            );
+        }
+
+        try {
+            post = await this.articleOptionRepository.findOneBy({ id: editArticleDto.id });
+        } catch (error) {
+            throw new RequestTimeoutException(
+                'Unable to process your request at the moment please try later',
+                {
+                    description: 'Error connecting to the database',
+                },
+            );
+        }
+
+        if (!post) {
+            throw new BadRequestException('The post Id does not exist');
+        }
+
 
         // Update post related properties
         post.title = editArticleDto.title ?? post.title;
@@ -75,7 +108,18 @@ export class PostsSerivce {
 
         post.tags = tags;
 
-        return await this.articleOptionRepository.save(post);
+        // Save the post and return
+        try {
+            await this.articleOptionRepository.save(post);
+        } catch (error) {
+            throw new RequestTimeoutException(
+                'Unable to process your request at the moment please try later',
+                {
+                    description: 'Error connecting to the database',
+                },
+            );
+        }
+        return post;
     }
 
     public async getPosts(getPostsDto: GetPostsParamsDto) {
