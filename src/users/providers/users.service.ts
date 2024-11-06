@@ -1,5 +1,5 @@
 import { CreateUserDto } from './../dtos/create-user.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AuthService } from './../../auth/providers/auth.service';
 import { GetUsersParamDto } from './../dtos/get-users-params.dto';
 import { BadRequestException, forwardRef, HttpException, HttpStatus, Inject, Injectable, RequestTimeoutException } from "@nestjs/common";
@@ -23,6 +23,7 @@ export class UserService {
         @Inject(profileConfig.KEY)
         private readonly profileconfiguration: ConfigType<typeof profileConfig>,
 
+        private readonly dataSource: DataSource
     ) { }
 
     public async createUser(createUserDto: CreateUserDto) {
@@ -117,4 +118,40 @@ export class UserService {
 
         return user
     }
+
+    /**
+     * create many users -- transactions example
+     */
+    public async createMany(createUserDto: CreateUserDto[]) {
+        let newUsers: User[] = [];
+
+        // query runner instance
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        // connect query runner to datasource
+        await queryRunner.connect();
+
+        // start transaction
+        await queryRunner.startTransaction();
+
+        try {
+            for (let user of createUserDto) {
+                let newUser = queryRunner.manager.create(User, user);
+                let result = await queryRunner.manager.save(newUser);
+                newUsers.push(result);
+            }
+
+            // commit the transaction
+            await queryRunner.commitTransaction();
+        } catch (error) {
+            // in case of any error, rollback all changes
+            await queryRunner.rollbackTransaction()
+        } finally {
+            // finally close the query runnder instance
+            await queryRunner.release();
+        }
+
+        return newUsers;
+    }
+
 }
