@@ -7,6 +7,8 @@ import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 
 /**
  * Class to connect users service with other services
@@ -23,7 +25,7 @@ export class UserService {
         @Inject(profileConfig.KEY)
         private readonly profileconfiguration: ConfigType<typeof profileConfig>,
 
-        private readonly dataSource: DataSource
+        private readonly usersCreateManyProvider: UsersCreateManyProvider
     ) { }
 
     public async createUser(createUserDto: CreateUserDto) {
@@ -122,36 +124,8 @@ export class UserService {
     /**
      * create many users -- transactions example
      */
-    public async createMany(createUserDto: CreateUserDto[]) {
-        let newUsers: User[] = [];
-
-        // query runner instance
-        const queryRunner = this.dataSource.createQueryRunner();
-
-        // connect query runner to datasource
-        await queryRunner.connect();
-
-        // start transaction
-        await queryRunner.startTransaction();
-
-        try {
-            for (let user of createUserDto) {
-                let newUser = queryRunner.manager.create(User, user);
-                let result = await queryRunner.manager.save(newUser);
-                newUsers.push(result);
-            }
-
-            // commit the transaction
-            await queryRunner.commitTransaction();
-        } catch (error) {
-            // in case of any error, rollback all changes
-            await queryRunner.rollbackTransaction()
-        } finally {
-            // finally close the query runnder instance
-            await queryRunner.release();
-        }
-
-        return newUsers;
+    public async createMany(createManyUsersDto: CreateManyUsersDto) {
+        this.usersCreateManyProvider.createMany(createManyUsersDto);
     }
 
 }

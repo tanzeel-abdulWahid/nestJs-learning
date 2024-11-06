@@ -9,3 +9,23 @@ Content-Type:application/json
     "email":"tanzeel@gmail.com",
     "password":"T@anzeel123"
 }
+
+POST http://localhost:3000/users/create-many
+Content-Type:application/json
+
+{
+    "users":[
+        {
+            "fname":"test",
+            "lname":"wahid",
+            "email":"test@gmail.com",
+            "password":"T@anzeel123"
+        },
+        {
+            "fname":"nest",
+            "lname":"wahid",
+            "email":"nest@gmail.com",
+            "password":"T@anzeel123"
+        }
+    ]
+}
