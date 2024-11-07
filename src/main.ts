@@ -9,6 +9,9 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true, // transforms the incomming req to the instance of  DTO class after validation
+    transformOptions: {
+      enableImplicitConversion: true //validations pipe will take care of conversion, we dont have to use @Type decorator
+    }
   }))
 
   /*

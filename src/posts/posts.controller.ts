@@ -4,6 +4,7 @@ import { PostsSerivce } from './providers/posts.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe } from '@nestjs/common';
 import { PostArticleDto } from './dtos/post-article-params.dto';
 import { EditArticleDto } from './dtos/patch-article-params.dto';
+import { GetPostsQueryDto } from './dtos/get-posts-query.dto';
 
 @Controller('posts')
 @ApiTags("Posts")
@@ -11,8 +12,9 @@ export class PostsController {
     constructor(private readonly postsSerivce: PostsSerivce) { }
 
     @Get('/:userId?')
-    public getPosts(@Param() getPostsDto: GetPostsParamsDto) {
-        return this.postsSerivce.getPosts(getPostsDto)
+    public getPosts(@Param() getPostsDto: GetPostsParamsDto, @Query() postQuery: GetPostsQueryDto) {
+        // console.log(postQuery)
+        return this.postsSerivce.getPosts(postQuery, getPostsDto)
     }
 
     @ApiOperation({

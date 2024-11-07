@@ -1,3 +1,4 @@
+import { PaginationProvider } from './../../common/pagination/providers/pagination.provider';
 import { EditArticleDto } from './../dtos/patch-article-params.dto';
 import { PostArticleDto } from './../dtos/post-article-params.dto';
 import { BadRequestException, Body, Injectable, RequestTimeoutException } from '@nestjs/common';
@@ -8,6 +9,8 @@ import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../post.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
+import { GetPostsQueryDto } from '../dtos/get-posts-query.dto';
+import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
 
 @Injectable()
 export class PostsSerivce {
@@ -29,6 +32,11 @@ export class PostsSerivce {
                * Injecting users serivce
               */
         private readonly tagsService: TagsService,
+
+        /**
+         * Injecting pagination provider
+         */
+        private readonly paginationProvider: PaginationProvider
     ) { }
 
 
@@ -122,17 +130,23 @@ export class PostsSerivce {
         return post;
     }
 
-    public async getPosts(getPostsDto: GetPostsParamsDto) {
-        const user = this.usersService.findUserById(getPostsDto.userId);
+    public async getPosts(postQuery: GetPostsQueryDto, getPostsDto: GetPostsParamsDto): Promise<Paginated<Post>> {
+        // const user = this.usersService.findUserById(getPostsDto.userId);
         // use users service,
 
-        return this.articleOptionRepository.find({
-            relations: {
-                metaOption: true,
-                author: true, //RECOMMENDED-- OR we can use eager:true in posts entity
-                tags: true
-            }
-        });
+        // return this.articleOptionRepository.find({
+        //     relations: {
+        //         metaOption: true,
+        //         // author: true, //RECOMMENDED-- OR we can use eager:true in posts entity
+        //         // tags: true
+        //     },
+        //     skip: (postQuery.page - 1) * postQuery.limit,
+        //     take: postQuery.limit,
+        // });
+
+
+        let posts = await this.paginationProvider.paginateQuery(postQuery, this.articleOptionRepository)
+        return posts
     }
 
     public async deletePost(id: number) {

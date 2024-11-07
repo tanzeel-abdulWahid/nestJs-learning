@@ -66,10 +66,11 @@ export class PostArticleDto {
 
     @ApiPropertyOptional({
         description: 'Must be a valid timestamp in ISO8601',
-        example: '2024-03-16T07:46:32+0000',
+        example: '2024-03-16T07:46:32+00:00',
     })
     @IsOptional()
     @IsISO8601()
+    @Type(() => Date)
     publishedOn?: Date;
 
     @ApiPropertyOptional({

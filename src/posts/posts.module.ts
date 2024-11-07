@@ -7,6 +7,7 @@ import { Post } from './post.entity';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { MetaOptionsModule } from 'src/meta-options/meta-options.module';
 import { TagsModule } from 'src/tags/tags.module';
+import { PaginationModule } from 'src/common/pagination/pagination.module';
 
 @Module({
     controllers: [PostsController],
@@ -15,7 +16,8 @@ import { TagsModule } from 'src/tags/tags.module';
         UsersModule,
         TypeOrmModule.forFeature(([Post, MetaOption])),
         MetaOptionsModule,
-        TagsModule
+        TagsModule,
+        PaginationModule
 
     ] // to use users service in posts module -- WE import whole user module
 })
