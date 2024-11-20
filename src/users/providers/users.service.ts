@@ -9,6 +9,8 @@ import { ConfigService, ConfigType } from '@nestjs/config';
 import profileConfig from '../config/profile.config';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
+import { CreateUserProvider } from './create-user.provider';
+import { FindUserByEmailProvider } from './find-user-by-email.provider';
 
 /**
  * Class to connect users service with other services
@@ -25,39 +27,21 @@ export class UserService {
         @Inject(profileConfig.KEY)
         private readonly profileconfiguration: ConfigType<typeof profileConfig>,
 
-        private readonly usersCreateManyProvider: UsersCreateManyProvider
+        private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+        /**
+         * inject create user provider
+         */
+        private readonly createUserProvider: CreateUserProvider,
+
+        /**
+         * inject find user by email user provider
+         */
+        private readonly findUserByEmailProvider: FindUserByEmailProvider
     ) { }
 
     public async createUser(createUserDto: CreateUserDto) {
-        let existingUser = undefined;
-
-        try {
-            existingUser = await this.usersRespository.findOne({
-                where: { email: createUserDto.email }
-            })
-        } catch (error) {
-            throw new RequestTimeoutException('unable to proccess request', {
-                description: 'Error connecting to the DB'
-            })
-        }
-
-        if (existingUser) {
-            throw new BadRequestException('User already exists', {
-                description: 'try another email'
-            })
-        }
-        // Create new user
-        let newUser = this.usersRespository.create(createUserDto);
-
-        try {
-            newUser = await this.usersRespository.save(newUser)
-        } catch (error) {
-            throw new RequestTimeoutException('unable to proccess request', {
-                description: 'Error connecting to the DB'
-            })
-        }
-
-        return newUser
+        return this.createUserProvider.createUser(createUserDto);
     }
 
     /**
@@ -88,13 +72,13 @@ export class UserService {
             }
         )
 
-        return [{
-            name: "tanzeel",
-            age: 23
-        }, {
-            name: "muskan",
-            age: 15
-        }]
+        // return [{
+        //     name: "tanzeel",
+        //     age: 23
+        // }, {
+        //     name: "muskan",
+        //     age: 15
+        // }]
     }
 
     /**
@@ -128,4 +112,7 @@ export class UserService {
         this.usersCreateManyProvider.createMany(createManyUsersDto);
     }
 
+    public async findUserByEmail(email: string) {
+        return await this.findUserByEmailProvider.findOneByEmail(email)
+    }
 }
