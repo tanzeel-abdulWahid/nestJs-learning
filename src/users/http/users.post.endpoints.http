@@ -2,6 +2,7 @@ POST http://localhost:3000/users
 ?limit=20
 &skip=0
 Content-Type:application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoidGFuemVlbDAxQGdtYWlsLmNvbSIsImlhdCI6MTczMzA3ODMwMiwiZXhwIjoxNzMzMDgxOTAyLCJhdWQiOiJsb2NhbGhvc3Q6MzAwMCIsImlzcyI6ImxvY2FsaG9zdDozMDAwIn0.rMr9yhJJb1OWrl5gaGJ5TKf7zLyAQcRHNq5FDCK_AdQ
 
 {
     "fname":"tanzeel",
@@ -12,7 +13,7 @@ Content-Type:application/json
 
 POST http://localhost:3000/users/create-many
 Content-Type:application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoidGFuemVlbDAxQGdtYWlsLmNvbSIsImlhdCI6MTczMjY1MjcxMywiZXhwIjoxNzMyNjU2MzEzLCJhdWQiOiJsb2NhbGhvc3Q6MzAwMCIsImlzcyI6ImxvY2FsaG9zdDozMDAwIn0.pdvjfq6JTJFd07Rbty6ZSvRpphwq7vvu4ZJoD0qYxX0
 {
     "users":[
         {

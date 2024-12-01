@@ -1,10 +1,10 @@
 POST http://localhost:3000/posts
 Content-Type:application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoidGFuemVlbDAxQGdtYWlsLmNvbSIsImlhdCI6MTczMzA4NTY2MCwiZXhwIjoxNzMzMDg5MjYwLCJhdWQiOiJsb2NhbGhvc3Q6MzAwMCIsImlzcyI6ImxvY2FsaG9zdDozMDAwIn0.ApK8cWpD5TSpFHAKCL0F0lEOqlfRC2E8ixirlCiXIS8
 {
   "title": "What's new with NestJS",
   "postType": "post",
-  "slug": "new-with-nestjs-14",
+  "slug": "new-with-nestjs-16",
   "status": "draft",
   "content": "test content",
   "schema": "{\r\n \"@context\": \"https:\/\/schema.org\",\r\n \"@type\": \"Person\"\r\n }",
@@ -12,6 +12,5 @@ Content-Type:application/json
   "metaOption" : {
       "metaValue": "{\"sidebarEnabled\": true, \"footerActive\":true}"
     },
-  "authorId":1,
-  "tags": [1,2]
+  "tags": []
 }

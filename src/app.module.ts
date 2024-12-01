@@ -1,3 +1,4 @@
+import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,17 +14,22 @@ import { PaginationModule } from './common/pagination/pagination.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import environmentValidation from './config/environment.validation';
+import jwtConfig from './auth/config/jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
+import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
 const ENV = process.env.NODE_ENV;
 
 @Module({
   imports: [UsersModule, PostsModule, AuthModule,
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forRoot({
       isGlobal: true, //means this config module is availabe in all modules
       // envFilePath: ['.env.development'] //.env.development will work only
       envFilePath: [!ENV ? '.env' : `.env.${ENV}`.trim()], //dev me dev load krega, test me test env
       load: [appConfig, databaseConfig],
-      validationSchema: environmentValidation
-
+      validationSchema: environmentValidation,
     }),
     TypeOrmModule.forRootAsync({ //for Async Connection -- now we can inject dependencies
       imports: [ConfigModule],
@@ -44,7 +50,13 @@ const ENV = process.env.NODE_ENV;
     MetaOptionsModule,
     PaginationModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard //entire app private
+    },
+    AccessTokenGuard
+  ],
 })
 export class AppModule {
 

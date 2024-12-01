@@ -11,6 +11,8 @@ import { Post } from '../post.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
 import { GetPostsQueryDto } from '../dtos/get-posts-query.dto';
 import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
+import { CreatePost } from './create-post.provider';
+import { ActiveUserData } from 'src/auth/interfaces/active-user-data.interface';
 
 @Injectable()
 export class PostsSerivce {
@@ -36,34 +38,17 @@ export class PostsSerivce {
         /**
          * Injecting pagination provider
          */
-        private readonly paginationProvider: PaginationProvider
+        private readonly paginationProvider: PaginationProvider,
+
+        /**
+         * Injecting createPostProvider provider
+         */
+        private readonly createPostProvider: CreatePost,
     ) { }
 
 
-    public async createArticle(postArticleDto: PostArticleDto) {
-
-        // let metaOpt = postArticleDto.metaOption ? this.metaOptionRepository.create(postArticleDto.metaOption) : null;
-
-        // if (metaOpt) {
-        //     await this.metaOptionRepository.save(metaOpt);
-        // }
-        let author = await this.usersService.findUserById(postArticleDto.authorId);
-
-        let tags = await this.tagsService.findMultipleTags(postArticleDto.tags)
-
-        let createdArticle = this.articleOptionRepository.create({
-            ...postArticleDto,
-            author,
-            tags
-        })
-
-        // if (metaOpt) {
-        //     createdArticle.metaOption = metaOpt
-        // }
-
-        // WE'LL DO USING CASCASEs
-
-        return await this.articleOptionRepository.save(createdArticle)
+    public async createArticle(postArticleDto: PostArticleDto, user: ActiveUserData) {
+        return await this.createPostProvider.createArticle(postArticleDto, user)
     }
 
     public async update(editArticleDto: EditArticleDto) {

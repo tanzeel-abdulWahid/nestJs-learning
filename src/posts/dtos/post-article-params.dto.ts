@@ -102,14 +102,4 @@ export class PostArticleDto {
     @ValidateNested({ each: true })  //it ensures all above validations are conducrted
     @Type(() => CreateArticleMetaOptionsDto) // helps nest understand type of nested obj
     metaOption?: CreateArticleMetaOptionsDto | null;
-
-    @ApiProperty({
-        type: 'integer',
-        example: 12,
-        description: "id of user"
-    })
-    @IsInt()
-    @IsNotEmpty()
-    authorId: number;
-
 }

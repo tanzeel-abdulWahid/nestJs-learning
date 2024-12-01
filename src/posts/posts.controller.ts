@@ -1,10 +1,13 @@
+import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetPostsParamsDto } from './dtos/get-posts-params.dto';
 import { PostsSerivce } from './providers/posts.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, Req } from '@nestjs/common';
 import { PostArticleDto } from './dtos/post-article-params.dto';
 import { EditArticleDto } from './dtos/patch-article-params.dto';
 import { GetPostsQueryDto } from './dtos/get-posts-query.dto';
+import { ActiveUser } from 'src/auth/decorator/active-user.decorator';
+import { ActiveUserData } from 'src/auth/interfaces/active-user-data.interface';
 
 @Controller('posts')
 @ApiTags("Posts")
@@ -25,8 +28,8 @@ export class PostsController {
         description: "post created successfully"
     })
     @Post()
-    public postArticle(@Body() postArticleDto: PostArticleDto) {
-        return this.postsSerivce.createArticle(postArticleDto)
+    public postArticle(@Body() postArticleDto: PostArticleDto, @ActiveUser() user: ActiveUserData) {
+        return this.postsSerivce.createArticle(postArticleDto, user)
     }
 
     @Delete()
