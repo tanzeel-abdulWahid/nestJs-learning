@@ -50,7 +50,7 @@ export class UserService {
     public getUsers(getUsersParamDto: GetUsersParamDto) {
         // only return if authenticated
 
-        const isAuth = this.authService.isAuthenticated();
+        // const isAuth = this.authService.isAuthenticated();
         // console.log(isAuth)
 
         // To get the env variable
