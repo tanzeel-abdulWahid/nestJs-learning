@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Put, Delete, Param, Query, Body, Headers, Ip, ParseIntPipe, DefaultValuePipe, ValidationPipe, UseGuards, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Put, Delete, Param, Query, Body, Headers, Ip, ParseIntPipe, DefaultValuePipe, ValidationPipe, UseGuards, SetMetadata, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-params.dto';
 import { PatchUserDto } from './dtos/patch-user.dto';
@@ -48,7 +48,8 @@ export class UsersController {
         example: 69
     })
     // @SetMetadata('key', 'None')
-    // @Auth(AuthType.None) //we made custome decorator
+    @Auth(AuthType.None) //we made custome decorator
+    @UseInterceptors(ClassSerializerInterceptor)
     public createUser(
         // only validationPipe and DefaultValueType will require a new keyword
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
